@@ -1,11 +1,12 @@
 #[cfg(test)]
 mod tests {
+
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
     use cosmwasm_std::{coins, from_binary};
 
     use crate::contract::{execute, instantiate, query};
     use crate::error::ContractError;
-    use crate::msg::{ExecuteMsg, GetAllResponse, InstantiateMsg, QueryMsg};
+    use crate::msg::{Entry, ExecuteMsg, GetAllResponse, InstantiateMsg, QueryMsg};
 
     #[test]
     fn check_initialize() {
@@ -25,8 +26,8 @@ mod tests {
         )
         .unwrap();
         let value: GetAllResponse = from_binary(&res).unwrap();
-        let empty_vec: Vec<(Vec<u8>, String)> = Vec::new();
-        assert_eq!(empty_vec, value.passwords);
+        let empty_vec: Vec<Entry> = Vec::new();
+        assert_eq!(empty_vec, value.entries);
     }
 
     #[test]
@@ -56,8 +57,11 @@ mod tests {
         .unwrap();
         let value: GetAllResponse = from_binary(&res).unwrap();
         assert_eq!(
-            vec![("google".as_bytes().to_vec(), "abcd1234!".to_string())],
-            value.passwords
+            vec![Entry {
+                name: "google".to_string(),
+                password: "abcd1234!".to_string(),
+            }],
+            value.entries
         );
 
         // Check that we can't add to existing password
@@ -120,8 +124,11 @@ mod tests {
         .unwrap();
         let value: GetAllResponse = from_binary(&res).unwrap();
         assert_eq!(
-            vec![("google".as_bytes().to_vec(), "abc".to_string())],
-            value.passwords
+            vec![Entry {
+                name: "google".to_string(),
+                password: "abc".to_string(),
+            }],
+            value.entries
         );
     }
 
@@ -169,7 +176,7 @@ mod tests {
         )
         .unwrap();
         let value: GetAllResponse = from_binary(&res).unwrap();
-        let empty_vec: Vec<(Vec<u8>, String)> = Vec::new();
-        assert_eq!(empty_vec, value.passwords);
+        let empty_vec: Vec<Entry> = Vec::new();
+        assert_eq!(empty_vec, value.entries);
     }
 }

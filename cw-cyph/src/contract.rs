@@ -1,3 +1,5 @@
+use std::str;
+
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
@@ -6,7 +8,7 @@ use cosmwasm_std::{
 use cw2::set_contract_version;
 
 use crate::error::ContractError;
-use crate::msg::{ExecuteMsg, GetAllResponse, InstantiateMsg, QueryMsg};
+use crate::msg::{Entry, ExecuteMsg, GetAllResponse, InstantiateMsg, QueryMsg};
 use crate::state::DATA;
 
 // version info for migration info
@@ -100,5 +102,13 @@ fn query_all(deps: Deps, owner: String) -> StdResult<GetAllResponse> {
         .prefix(&owner_checked)
         .range(deps.storage, None, None, Order::Ascending)
         .collect();
-    Ok(GetAllResponse { passwords: all? })
+    let mut resp: Vec<Entry> = Vec::new();
+    for (name, password) in all? {
+        let name_string = str::from_utf8(&name[..])?.to_string();
+        resp.push(Entry {
+            name: name_string,
+            password: password,
+        });
+    }
+    Ok(GetAllResponse { entries: resp })
 }

@@ -19,8 +19,14 @@ pub enum QueryMsg {
     GetAll { owner: String },
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+pub struct Entry {
+    pub name: String,
+    pub password: String,
+}
+
 // We define a custom struct for each query response
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct GetAllResponse {
-    pub passwords: Vec<(Vec<u8>, String)>,
+    pub entries: Vec<Entry>,
 }
