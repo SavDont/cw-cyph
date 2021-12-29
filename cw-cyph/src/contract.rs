@@ -1,11 +1,13 @@
 #[cfg(not(feature = "library"))]
 use cosmwasm_std::entry_point;
-use cosmwasm_std::{to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Order, Response, StdResult};
+use cosmwasm_std::{
+    to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Order, Response, StdResult,
+};
 use cw2::set_contract_version;
 
 use crate::error::ContractError;
-use crate::msg::{GetAllResponse, ExecuteMsg, InstantiateMsg, QueryMsg};
-use crate::state::{DATA};
+use crate::msg::{ExecuteMsg, GetAllResponse, InstantiateMsg, QueryMsg};
+use crate::state::DATA;
 
 // version info for migration info
 const CONTRACT_NAME: &str = "crates.io:cw-cyph";
@@ -39,7 +41,12 @@ pub fn execute(
     }
 }
 
-pub fn try_add(deps: DepsMut, info: MessageInfo, name: String, password: String) -> Result<Response, ContractError> {
+pub fn try_add(
+    deps: DepsMut,
+    info: MessageInfo,
+    name: String,
+    password: String,
+) -> Result<Response, ContractError> {
     let exists = DATA.has(deps.storage, (&info.sender, &name));
     if exists {
         return Err(ContractError::KeyAlreadyExists {});
@@ -48,17 +55,30 @@ pub fn try_add(deps: DepsMut, info: MessageInfo, name: String, password: String)
     Ok(Response::new().add_attribute("method", "try_add"))
 }
 
-pub fn try_edit(deps: DepsMut, info: MessageInfo, name: String, password: String) -> Result<Response, ContractError> {
-    DATA.update(deps.storage, (&info.sender, &name), |v| -> Result<String, ContractError> {
-        match v {
-            None => Err(ContractError::KeyDoesntExist {}),
-            Some (_x) => Ok(password)
-        }
-    })?;
+pub fn try_edit(
+    deps: DepsMut,
+    info: MessageInfo,
+    name: String,
+    password: String,
+) -> Result<Response, ContractError> {
+    DATA.update(
+        deps.storage,
+        (&info.sender, &name),
+        |v| -> Result<String, ContractError> {
+            match v {
+                None => Err(ContractError::KeyDoesntExist {}),
+                Some(_x) => Ok(password),
+            }
+        },
+    )?;
     Ok(Response::new().add_attribute("method", "try_edit"))
 }
 
-pub fn try_delete(deps: DepsMut, info: MessageInfo, name: String) -> Result<Response, ContractError> {
+pub fn try_delete(
+    deps: DepsMut,
+    info: MessageInfo,
+    name: String,
+) -> Result<Response, ContractError> {
     let exists = DATA.has(deps.storage, (&info.sender, &name));
     if !exists {
         return Err(ContractError::KeyDoesntExist {});
@@ -80,5 +100,5 @@ fn query_all(deps: Deps, owner: String) -> StdResult<GetAllResponse> {
         .prefix(&owner_checked)
         .range(deps.storage, None, None, Order::Ascending)
         .collect();
-    Ok(GetAllResponse { passwords: all?})
+    Ok(GetAllResponse { passwords: all? })
 }
