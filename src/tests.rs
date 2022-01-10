@@ -10,7 +10,7 @@ mod tests {
 
     #[test]
     fn check_initialize() {
-        let mut deps = mock_dependencies(&coins(2, "token"));
+        let mut deps = mock_dependencies();
 
         let msg = InstantiateMsg {};
         let info = mock_info("creator", &coins(2, "token"));
@@ -32,7 +32,7 @@ mod tests {
 
     #[test]
     fn add() {
-        let mut deps = mock_dependencies(&coins(2, "token"));
+        let mut deps = mock_dependencies();
 
         let msg = InstantiateMsg {};
         let info = mock_info("creator", &coins(2, "token"));
@@ -79,7 +79,7 @@ mod tests {
 
     #[test]
     fn edit() {
-        let mut deps = mock_dependencies(&coins(2, "token"));
+        let mut deps = mock_dependencies();
 
         let msg = InstantiateMsg {};
         let info = mock_info("creator", &coins(2, "token"));
@@ -134,7 +134,7 @@ mod tests {
 
     #[test]
     fn delete() {
-        let mut deps = mock_dependencies(&coins(2, "token"));
+        let mut deps = mock_dependencies();
 
         let msg = InstantiateMsg {};
         let info = mock_info("creator", &coins(2, "token"));
